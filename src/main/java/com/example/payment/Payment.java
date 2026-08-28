@@ -48,4 +48,13 @@ public class Payment {
     public PaymentStatus getStatus(){
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id='" + id + '\'' +
+                ", amount=" + amount +
+                ", status=" + status +
+                '}';
+    }
 }
