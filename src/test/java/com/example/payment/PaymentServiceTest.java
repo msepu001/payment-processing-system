@@ -12,7 +12,10 @@ public class PaymentServiceTest {
     @Test
     void shouldCalculateCompletedPaymentTotal() {
 
-        PaymentService paymentService = new PaymentService();
+        PaymentRepository repository =
+                new InMemoryPaymentRepository();
+
+        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(
@@ -50,7 +53,11 @@ public class PaymentServiceTest {
     @Test
     void shouldCountFailedPayments() {
 
-        PaymentService paymentService = new PaymentService();
+        PaymentRepository repository =
+                new InMemoryPaymentRepository();
+
+
+        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(
@@ -77,7 +84,11 @@ public class PaymentServiceTest {
     @Test
     void shouldReturnEmptyWhenPaymentDoesNotExist() {
 
-        PaymentService paymentService = new PaymentService();
+        PaymentRepository repository =
+                new InMemoryPaymentRepository();
+
+
+        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(
@@ -96,7 +107,10 @@ public class PaymentServiceTest {
     @Test
     void shouldReturnTrueForIdThatExist(){
 
-        PaymentService paymentService = new PaymentService();
+        PaymentRepository repository =
+                new InMemoryPaymentRepository();
+
+        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(

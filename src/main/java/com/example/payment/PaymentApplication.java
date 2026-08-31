@@ -9,7 +9,9 @@ public class PaymentApplication {
 
     public static void main(String[] args) {
 
-        PaymentService paymentService = new PaymentService();
+        PaymentRepository repository = new InMemoryPaymentRepository();
+
+        PaymentService paymentService = new PaymentService(repository);
 
         /*try {
 

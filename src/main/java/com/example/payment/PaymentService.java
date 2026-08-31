@@ -7,14 +7,17 @@ import java.math.BigDecimal;
 
 public class PaymentService {
 
-    private final List<Payment> payments = new ArrayList<>();
+    private final PaymentRepository paymentRepository;
+
+    public PaymentService(PaymentRepository paymentRepository) {
+        this.paymentRepository = paymentRepository;
+    }
 
     public void createPayment(Payment payment) {
 
-        boolean paymentExists = payments.stream()
-                .anyMatch(existingPayment ->
-                        existingPayment.getId()
-                                .equals(payment.getId()));
+        boolean paymentExists =
+                paymentRepository.findById(payment.getId())
+                        .isPresent();
 
         if (paymentExists) {
             throw new InvalidPaymentException(
@@ -23,22 +26,20 @@ public class PaymentService {
             );
         }
 
-        payments.add(payment);
+        paymentRepository.save(payment);
     }
 
-    public List<Payment> getAllPayments() {
-        return List.copyOf(payments);
+   public List<Payment> getAllPayments(){
+        return paymentRepository.findAll();
     }
 
-    public Optional<Payment> findPaymentById(String id) {
-        return payments.stream()
-                .filter(payment ->
-                        payment.getId().equals(id))
-                .findFirst();
-    }
+
+public Optional<Payment> findPaymentById(String id) {
+    return paymentRepository.findById(id);
+}
 
     public List<Payment> getCompletedPayments() {
-        return payments.stream()
+        return paymentRepository.findAll().stream()
                 .filter(payment ->
                         payment.getStatus()
                                 == PaymentStatus.COMPLETED)
@@ -46,7 +47,7 @@ public class PaymentService {
     }
 
     public BigDecimal getCompletedPaymentTotal() {
-        return payments.stream()
+        return paymentRepository.findAll().stream()
                 .filter(payment ->
                         payment.getStatus()
                                 == PaymentStatus.COMPLETED)
@@ -58,7 +59,7 @@ public class PaymentService {
     }
 
     public long getFailedPaymentCount() {
-        return payments.stream()
+        return paymentRepository.findAll().stream()
                 .filter(payment ->
                         payment.getStatus()
                                 == PaymentStatus.FAILED)
@@ -68,7 +69,7 @@ public class PaymentService {
     public List<Payment> getPaymentsByStatus(
             PaymentStatus status
     ) {
-        return payments.stream()
+        return paymentRepository.findAll().stream()
                 .filter(payment ->
                         payment.getStatus() == status)
                 .toList();
