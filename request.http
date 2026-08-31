@@ -1,0 +1,35 @@
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "Pay-001",
+  "amount": 250.00,
+  "status": "COMPLETED"
+}
+
+###
+
+GET http://localhost:8080/payments/Pay-999
+
+###
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+
+{
+  "id": "Pay-002",
+  "amount": 125.50,
+  "status": "PENDING"
+}
+
+###
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "Pay-003",
+  "amount": 499.99,
+  "status": "COMPLETED"
+}

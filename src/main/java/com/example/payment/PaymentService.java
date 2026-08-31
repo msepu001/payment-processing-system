@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
@@ -35,7 +37,7 @@ public class PaymentService {
 
 
 public Optional<Payment> findPaymentById(String id) {
-    return paymentRepository.findById(id);
+        return paymentRepository.findById(id);
 }
 
     public List<Payment> getCompletedPayments() {
