@@ -1,5 +1,6 @@
 package com.example.payment;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -15,6 +16,7 @@ public class PaymentServiceTest {
     private JpaPaymentRepository paymentRepository;
     private PaymentService paymentService;
 
+    @BeforeEach
     void setUp() {
 
         // Create a fake repository.
