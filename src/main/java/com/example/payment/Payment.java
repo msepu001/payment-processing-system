@@ -2,10 +2,44 @@ package com.example.payment;
 
 import java.math.BigDecimal;
 
+/*
+ * Payment
+ *
+ * This is our domain model and now also a JPA entity.
+ *
+ * @Entity tells Hibernate that Payment should be stored
+ * in a database table.
+ *
+ * @Id identifies the primary key.
+ *
+ * Hibernate also requires a no-argument constructor so it can
+ * recreate Payment objects when reading rows from PostgreSQL.
+ */
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+/*
+ * JPA enum imports.
+ *
+ * EnumType.STRING tells Hibernate to store readable enum names
+ * such as COMPLETED instead of numeric enum positions.
+ */
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
+@Entity
 public class Payment {
-    private final String id;
-    private final BigDecimal amount;
-    private final PaymentStatus status;
+
+    @Id
+    private String id;
+    private BigDecimal amount;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
+
+    protected Payment(){
+        // Required by JPA/Hibernate.
+    }
 
     public Payment(String id, BigDecimal amount, PaymentStatus status){
 

@@ -33,3 +33,59 @@ Content-Type: application/json
   "amount": 499.99,
   "status": "COMPLETED"
 }
+
+###
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "",
+  "amount": -50,
+  "status": "PENDING"
+}
+
+### Create a payment in PostgreSQL
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "Pay-DB-001",
+  "amount": 725.50,
+  "status": "COMPLETED"
+}
+
+###
+
+### Read all payments from PostgreSQL
+
+GET http://localhost:8080/payments
+
+###
+
+### Read one payment from PostgreSQL
+
+GET http://localhost:8080/payments/Pay-DB-001
+
+### Get every payment.
+
+GET http://localhost:8080/payments
+
+###
+
+### Get completed payments only.
+
+GET http://localhost:8080/payments?status=COMPLETED
+
+###
+
+### Get pending payments only.
+
+GET http://localhost:8080/payments?status=PENDING
+
+###
+
+### Get failed payments only.
+
+GET http://localhost:8080/payments?status=FAILED

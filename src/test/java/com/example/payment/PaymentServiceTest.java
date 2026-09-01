@@ -7,15 +7,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+import org.mockito.Mockito;
+
 public class PaymentServiceTest {
+
+    private JpaPaymentRepository paymentRepository;
+    private PaymentService paymentService;
+
+    void setUp() {
+
+        // Create a fake repository.
+        paymentRepository = Mockito.mock(JpaPaymentRepository.class);
+
+        // Inject the fake repository into the service.
+        paymentService = new PaymentService(paymentRepository);
+}
 
     @Test
     void shouldCalculateCompletedPaymentTotal() {
-
-        PaymentRepository repository =
-                new InMemoryPaymentRepository();
-
-        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(
@@ -53,12 +63,6 @@ public class PaymentServiceTest {
     @Test
     void shouldCountFailedPayments() {
 
-        PaymentRepository repository =
-                new InMemoryPaymentRepository();
-
-
-        PaymentService paymentService = new PaymentService(repository);
-
         paymentService.createPayment(
                 new Payment(
                         "Pay-001",
@@ -84,12 +88,6 @@ public class PaymentServiceTest {
     @Test
     void shouldReturnEmptyWhenPaymentDoesNotExist() {
 
-        PaymentRepository repository =
-                new InMemoryPaymentRepository();
-
-
-        PaymentService paymentService = new PaymentService(repository);
-
         paymentService.createPayment(
                 new Payment(
                         "Pay-001",
@@ -106,11 +104,6 @@ public class PaymentServiceTest {
 
     @Test
     void shouldReturnTrueForIdThatExist(){
-
-        PaymentRepository repository =
-                new InMemoryPaymentRepository();
-
-        PaymentService paymentService = new PaymentService(repository);
 
         paymentService.createPayment(
                 new Payment(

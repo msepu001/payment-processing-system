@@ -9,43 +9,58 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentService {
 
-    private final PaymentRepository paymentRepository;
+    /*
+     * PaymentService
+     *
+     * This service now uses JpaPaymentRepository instead of our
+     * in-memory repository.
+     *
+     * JpaPaymentRepository is implemented automatically by Spring Data JPA.
+     * Calls such as save(), findAll(), findById(), and existsById()
+     * will ultimately execute SQL against PostgreSQL.
+     */
 
-    public PaymentService(PaymentRepository paymentRepository) {
+    private final JpaPaymentRepository paymentRepository;
+
+    public PaymentService(JpaPaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 
     public void createPayment(Payment payment) {
 
-        boolean paymentExists =
-                paymentRepository.findById(payment.getId())
-                        .isPresent();
+        if (paymentRepository.existsById(payment.getId())) {
+                throw new InvalidPaymentException(
+                        "Payment ID already exists: " + payment.getId()
+                );
+            }
 
-        if (paymentExists) {
-            throw new InvalidPaymentException(
-                    "Payment ID already exists: "
-                            + payment.getId()
-            );
-        }
+           // paymentRepository.save(payment);
+       // }
+       // boolean paymentExists =
+             //   paymentRepository.findById(payment.getId())
+               //         .isPresent();
+
+       // if (paymentExists) {
+        //    throw new InvalidPaymentException(
+                   // "Payment ID already exists: "
+                    //        + payment.getId()
+           // );
+       // }
 
         paymentRepository.save(payment);
     }
 
-   public List<Payment> getAllPayments(){
+    public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
     }
 
+  // public List<Payment> getAllPayments(){
+       // return paymentRepository.findAll();
+   // }
 
-public Optional<Payment> findPaymentById(String id) {
+
+    public Optional<Payment> findPaymentById(String id) {
         return paymentRepository.findById(id);
-}
-
-    public List<Payment> getCompletedPayments() {
-        return paymentRepository.findAll().stream()
-                .filter(payment ->
-                        payment.getStatus()
-                                == PaymentStatus.COMPLETED)
-                .toList();
     }
 
     public BigDecimal getCompletedPaymentTotal() {
@@ -71,9 +86,6 @@ public Optional<Payment> findPaymentById(String id) {
     public List<Payment> getPaymentsByStatus(
             PaymentStatus status
     ) {
-        return paymentRepository.findAll().stream()
-                .filter(payment ->
-                        payment.getStatus() == status)
-                .toList();
+        return paymentRepository.findByStatus(status);
     }
 }

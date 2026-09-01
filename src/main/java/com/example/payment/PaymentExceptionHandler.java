@@ -12,7 +12,7 @@ import java.util.Map;
     public class PaymentExceptionHandler {
 
         @ExceptionHandler(InvalidPaymentException.class)
-        public ResponseEntity<String> handleInvalidPayment(
+        public ResponseEntity<Map<String, String>> handleInvalidPayment(
                 InvalidPaymentException exception
         )
             {

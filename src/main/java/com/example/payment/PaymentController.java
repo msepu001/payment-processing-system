@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -26,8 +27,16 @@ public class PaymentController {
     }
 
   @GetMapping("/payments")
-        public List<Payment> getAllPayment(){
-        return paymentService.getAllPayments();
+  public List<Payment> getPayments(
+          @RequestParam(required = false)
+          PaymentStatus status
+  ) {
+
+      if (status == null) {
+          return paymentService.getAllPayments();
+      }
+
+      return paymentService.getPaymentsByStatus(status);
   }
 
   @PostMapping("/payments")
