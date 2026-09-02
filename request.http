@@ -89,3 +89,87 @@ GET http://localhost:8080/payments?status=PENDING
 ### Get failed payments only.
 
 GET http://localhost:8080/payments?status=FAILED
+
+###
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "Pay-Update-001",
+  "amount": 1000,
+  "status": "COMPLETED"
+}
+
+###
+
+PUT http://localhost:8080/payments/Pay-Update-001
+Content-Type: application/json
+
+{
+  "amount": 500,
+  "status": "COMPLETED"
+}
+
+### Attempt to update a payment that does not exist.
+
+PUT http://localhost:8080/payments/DOES-NOT-EXIST
+Content-Type: application/json
+
+{
+  "amount": 500.00,
+  "status": "COMPLETED"
+}
+
+### 1. CREATE
+### Expected: 201 Created
+
+POST http://localhost:8080/payments
+Content-Type: application/json
+
+{
+  "id": "Pay-DELETE-001",
+  "amount": 325.00,
+  "status": "PENDING"
+}
+
+###
+
+### 2. READ
+### Expected: 200 OK
+
+GET http://localhost:8080/payments/Pay-DELETE-001
+
+###
+
+### 3. UPDATE
+### Expected: 200 OK
+
+PUT http://localhost:8080/payments/Pay-DELETE-001
+Content-Type: application/json
+
+{
+  "amount": 400.00,
+  "status": "COMPLETED"
+}
+
+###
+
+### 4. DELETE
+### Expected: 204 No Content
+
+DELETE http://localhost:8080/payments/Pay-DELETE-001
+
+###
+
+### 5. READ AFTER DELETE
+### Expected: 404 Not Found
+
+GET http://localhost:8080/payments/Pay-DELETE-001
+
+###
+
+### 6. DELETE AGAIN
+### Expected: 404 Not Found
+
+DELETE http://localhost:8080/payments/Pay-DELETE-001

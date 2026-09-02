@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -72,6 +74,41 @@ public class PaymentController {
                 .orElseGet(() ->
                         ResponseEntity.notFound().build()
                 );
+    }
+
+    @PutMapping("/payments/{id}")
+    public ResponseEntity<Payment> updatePayment(
+            @PathVariable String id,
+            @Valid @RequestBody UpdatePaymentRequest request
+    ) {
+
+        return paymentService.updatePayment(
+                        id,
+                        request.amount(),
+                        request.status()
+                )
+                .map(ResponseEntity::ok)
+                .orElseGet(() ->
+                        ResponseEntity.notFound().build()
+                );
+    }
+    @DeleteMapping("/payments/{id}")
+    public ResponseEntity<Void> deletePayment(
+            @PathVariable String id
+    ) {
+
+        boolean deleted =
+                paymentService.deletePayment(id);
+
+        if (!deleted) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 }

@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -203,5 +205,89 @@ class PaymentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.id == 'Pay-300')]").exists())
                 .andExpect(jsonPath("$[?(@.id == 'Pay-301')]").doesNotExist());
+    }
+
+    /*
+     * Tests updating an existing payment.
+     *
+     * Flow:
+     * 1. Create a payment.
+     * 2. Send PUT /payments/{id}.
+     * 3. Verify HTTP 200.
+     * 4. Verify the updated amount and status in the JSON response.
+     */
+    @Test
+    void shouldUpdatePayment() throws Exception {
+
+        String createRequest = """
+            {
+              "id": "Pay-400",
+              "amount": 100.00,
+              "status": "PENDING"
+            }
+            """;
+
+        String updateRequest = """
+            {
+              "amount": 600.00,
+              "status": "COMPLETED"
+            }
+            """;
+
+        mockMvc.perform(
+                        post("/payments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(createRequest)
+                )
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(
+                        put("/payments/Pay-400")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(updateRequest)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("Pay-400"))
+                .andExpect(jsonPath("$.amount").value(600.00))
+                .andExpect(jsonPath("$.status").value("COMPLETED"));
+    }
+
+    /*
+     * Tests deleting an existing payment.
+     *
+     * Flow:
+     * 1. Create a payment.
+     * 2. Delete it.
+     * 3. Expect HTTP 204 No Content.
+     * 4. Try to retrieve it afterward.
+     * 5. Expect HTTP 404 Not Found.
+     */
+    @Test
+    void shouldDeletePayment() throws Exception {
+
+        String requestBody = """
+            {
+              "id": "Pay-500",
+              "amount": 300.00,
+              "status": "PENDING"
+            }
+            """;
+
+        mockMvc.perform(
+                        post("/payments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                )
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(
+                        delete("/payments/Pay-500")
+                )
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(
+                        get("/payments/Pay-500")
+                )
+                .andExpect(status().isNotFound());
     }
 }

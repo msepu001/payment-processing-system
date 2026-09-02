@@ -88,4 +88,37 @@ public class PaymentService {
     ) {
         return paymentRepository.findByStatus(status);
     }
+
+    public Optional<Payment> updatePayment(
+            String id,
+            BigDecimal amount,
+            PaymentStatus status
+    ) {
+        Optional<Payment> existingPayment =
+                paymentRepository.findById(id);
+
+        if (existingPayment.isEmpty()) {
+            return Optional.empty();
+        }
+        Payment updatePayment = new Payment(
+                id,
+                amount,
+                status);
+
+        Payment savedPayment =
+                paymentRepository.save(updatePayment);
+
+        return Optional.of(savedPayment);
+    }
+
+    public boolean deletePayment (String id){
+
+            if (!paymentRepository.existsById(id)){
+                return false;
+            }
+            paymentRepository.deleteById(id);
+            return true;
+
+        }
+
 }
