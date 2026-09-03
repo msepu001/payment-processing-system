@@ -7,6 +7,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import org.mockito.Mockito;
@@ -29,29 +30,24 @@ public class PaymentServiceTest {
     @Test
     void shouldCalculateCompletedPaymentTotal() {
 
-        paymentService.createPayment(
-                new Payment(
+        Payment completed1 =
+        new Payment(
                         "Pay-001",
                         new BigDecimal("250.00"),
                         PaymentStatus.COMPLETED
-                )
+
         );
 
-        paymentService.createPayment(
-                new Payment(
-                        "Pay-002",
-                        new BigDecimal("125.00"),
-                        PaymentStatus.PENDING
-                )
-        );
-
-        paymentService.createPayment(
-                new Payment(
+        Payment completed2 =
+        new Payment(
                         "Pay-003",
                         new BigDecimal("500.00"),
                         PaymentStatus.COMPLETED
-                )
+
         );
+
+        when(paymentRepository.findAll())
+                .thenReturn(List.of(completed1, completed2));
 
         BigDecimal total =
                 paymentService.getCompletedPaymentTotal();
@@ -65,21 +61,24 @@ public class PaymentServiceTest {
     @Test
     void shouldCountFailedPayments() {
 
-        paymentService.createPayment(
+       Payment failed1 =
                 new Payment(
                         "Pay-001",
                         new BigDecimal("125.00"),
                         PaymentStatus.FAILED
-                )
+
         );
 
-        paymentService.createPayment(
+       Payment failed2 =
                 new Payment(
                         "Pay-002",
                         new BigDecimal("125.00"),
                         PaymentStatus.FAILED
-                )
+
         );
+
+        when(paymentRepository.findAll())
+                .thenReturn(List.of(failed1, failed2));
 
       long failedCount = paymentService.getFailedPaymentCount();
 

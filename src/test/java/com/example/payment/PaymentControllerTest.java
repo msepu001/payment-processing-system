@@ -1,5 +1,6 @@
 package com.example.payment;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -9,6 +10,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+
+
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,11 +37,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class PaymentControllerTest {
 
     // MockMvc allows us to simulate HTTP requests to our controller.
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private JpaPaymentRepository paymentRepository;
+
+    @BeforeEach
+    void cleanDatabase() {
+        paymentRepository.deleteAll();
+    }
 
     @Test
     void shouldCreatePayment() throws Exception {
