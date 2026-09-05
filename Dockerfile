@@ -1,16 +1,20 @@
-# ------------------------------------------------------------
-# Dockerfile for the Payment Processing System
-#
-# This Dockerfile creates a runnable image for the Spring Boot API.
-# It starts from a Java 21 runtime image, copies the packaged JAR
-# into the container, and runs the application on startup.
-# ------------------------------------------------------------
+FROM maven:3.9-eclipse-temurin-21 AS build
 
+WORKDIR /app
+
+COPY pom.xml .
+
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+
+# ---------- Runtime stage ----------
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY target/payment-processing-system-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
