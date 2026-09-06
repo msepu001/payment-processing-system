@@ -12,18 +12,16 @@ package com.example.payment.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
 
 @Service
+@Profile("aws")
 public class AwsSecretsService {
 
-   private final ObjectMapper objectMapper;
-
-    public AwsSecretsService(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public RdsCredentials getRdsCredentials(String secretName) {
 
